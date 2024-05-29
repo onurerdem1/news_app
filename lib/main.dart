@@ -20,9 +20,11 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => NewsViewModel()..fetchTopHeadlines(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'News App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: Colors.grey[200]
         ),
         home: NewsListView(),
       )

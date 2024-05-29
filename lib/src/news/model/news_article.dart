@@ -11,7 +11,7 @@ class NewsArticle {
 
   factory NewsArticle.fromJson(Map<String, dynamic> json) {
     return NewsArticle(
-      author: json['author'] ?? '',
+      author: json['author'] ?? 'Unknown',
       title: json['title'] ?? 'No Title',
       description: json['description'] ?? 'No Description',
       url: json['url'] ?? '',

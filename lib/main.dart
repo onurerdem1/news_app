@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/news/view/news_list_view.dart';
 import 'package:news_app/src/news/view_model/news_view_model.dart';
+import 'package:news_app/src/splash/view/splash_view.dart';
 import 'package:provider/provider.dart';
 
 
@@ -26,7 +27,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: Colors.grey[200]
         ),
-        home: NewsListView(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => SplashView(),
+          '/home': (context) => NewsListView()
+        },
       )
     );
   }

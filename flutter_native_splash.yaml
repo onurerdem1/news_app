@@ -1,0 +1,9 @@
+flutter_native_splash:
+  color: "#ffffff" # Arka plan rengi
+  image: assets/splash/splash_icon.png # Splash ekranında gösterilecek resim
+  android: true # Android platformu için etkin
+  ios: true # iOS platformu için etkin
+  web: false # Web platformu için etkin değil
+  android_gravity: center # Android'de görüntü konumu
+  ios_content_mode: scaleAspectFill # iOS'da görüntü modu
+  fullscreen: true # Tam ekran modunda splash ekranı

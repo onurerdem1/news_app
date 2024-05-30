@@ -22,6 +22,12 @@ class NewsListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('News App'),
+        actions: [
+          Padding(
+      padding: EdgeInsets.symmetric(horizontal:16),
+      child: Image.asset('assets/splash/splash_icon.png')
+    ),
+        ],
         backgroundColor: Colors.grey[200],
       ),
       body: Column(

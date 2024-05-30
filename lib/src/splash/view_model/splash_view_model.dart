@@ -6,6 +6,6 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   Future<void> _init() async {
-    await Future.delayed(Duration(seconds: 3)); // Splash ekranının süresi
+    await Future.delayed(Duration(seconds: 3));
   }
 }

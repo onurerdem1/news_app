@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../news/view/news_list_view.dart';
-import '../splash_view_model.dart';
+import '../view_model/splash_view_model.dart';
 
 
 class SplashView extends StatefulWidget {
@@ -28,7 +28,7 @@ class _SplashViewState extends State<SplashView> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: Image.asset('assets/splash/splash_icon.png'), // Splash ekranı resmi
+          child: Image.asset('assets/splash/splash_icon.png'),
         ),
       ),
     );

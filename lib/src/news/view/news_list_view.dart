@@ -5,8 +5,14 @@ import '../../category.dart';
 import '../view_model/news_view_model.dart';
 import 'news_detail_view.dart';
 
+class NewsListView extends StatefulWidget {
+  @override
+  _NewListViewState createState() => _NewListViewState();
+}
 
-class NewsListView extends StatelessWidget {
+class _NewListViewState extends State<NewsListView>{
+  bool _isSearching = false;
+  TextEditingController searchcontroller = TextEditingController();
   final List<Kategory> categories = [
     Kategory(name: 'Top Headlines', code: ' '),
     Kategory(name: 'Business', code: 'business'),
@@ -20,33 +26,39 @@ class NewsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('News App'),
-        actions: [
-          Padding(
-      padding: EdgeInsets.symmetric(horizontal:16),
-      child: Image.asset('assets/splash/splash_icon.png')
-    ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(75.0),
+        child: AppBar(
+        title: !_isSearching
+          ? Text("News App")
+        : TextField(
+          onChanged: (query){
+            Provider.of<NewsViewModel>(context,listen: false).filterArticles(query);
+          },
+          controller: searchcontroller,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: (){
+                setState(() {
+                  searchcontroller.clear();
+                  _isSearching=false;
+                });
+              },
+            ),
+            hintText: "Search...",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+              prefixIcon: Icon(Icons.search),
+          ),
+        ),
+          actions: _buildAppBarActions(),
         backgroundColor: Colors.grey[200],
+      ),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (query) {
-                Provider.of<NewsViewModel>(context, listen: false).filterArticles(query);
-              },
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -140,4 +152,41 @@ class NewsListView extends StatelessWidget {
       ),
     );
   }
+  List<Widget> _buildAppBarActions() {
+    if(!_isSearching){
+      return [
+        IconButton(
+          onPressed: (){
+            setState(() {
+              _isSearching=true;
+            });
+          },
+          icon: Icon(Icons.search)
+        ),
+        IconButton(
+          onPressed: (){},
+          icon: Icon(Icons.brightness_6),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Image.asset("assets/splash/splash_icon.png"),
+        )
+      ];
+    }
+    else {
+      return [
+        Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Image.asset("assets/splash/splash_icon.png"),
+      ),
+    Container()
+    ];
+    }
+  }
+
+
+
 }
+
+
+

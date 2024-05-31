@@ -1,6 +1,6 @@
-class Kategory {
+class Category {
   final String name;
   final String code;
 
-  Kategory({required this.name, required this.code});
+  Category({required this.name, required this.code});
 }

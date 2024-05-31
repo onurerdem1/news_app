@@ -13,15 +13,20 @@ class NewsListView extends StatefulWidget {
 class _NewListViewState extends State<NewsListView>{
   bool _isSearching = false;
   TextEditingController searchcontroller = TextEditingController();
-  final List<Kategory> categories = [
-    Kategory(name: 'Top Headlines', code: ' '),
-    Kategory(name: 'Business', code: 'business'),
-    Kategory(name: 'Entertainment', code: 'entertainment'),
-    Kategory(name: 'Health', code: 'health'),
-    Kategory(name: 'Science', code: 'science'),
-    Kategory(name: 'Sports', code: 'sports'),
-    Kategory(name: 'Technology', code: 'technology'),
+  final List<Category> categories = [
+    Category(name: 'Top Headlines', code: ' '),
+    Category(name: 'Business', code: 'business'),
+    Category(name: 'Entertainment', code: 'entertainment'),
+    Category(name: 'Health', code: 'health'),
+    Category(name: 'Science', code: 'science'),
+    Category(name: 'Sports', code: 'sports'),
+    Category(name: 'Technology', code: 'technology'),
   ];
+
+  Future<void> _refreshNews() async {
+    final selectedCategory = Provider.of<NewsViewModel>(context,listen: false).selectedCategory;
+    await Provider.of<NewsViewModel>(context,listen: false).fetchTopHeadlines(category: selectedCategory);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +42,7 @@ class _NewListViewState extends State<NewsListView>{
           },
           controller: searchcontroller,
           decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 10),
             suffixIcon: IconButton(
               icon: Icon(Icons.close),
               onPressed: (){
@@ -48,7 +54,7 @@ class _NewListViewState extends State<NewsListView>{
             ),
             hintText: "Search...",
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(30.0),
             ),
               prefixIcon: Icon(Icons.search),
           ),
@@ -93,7 +99,9 @@ class _NewListViewState extends State<NewsListView>{
                   return Center(child: CircularProgressIndicator());
                 }
 
-                return ListView.builder(
+                return RefreshIndicator(
+                onRefresh: _refreshNews,
+                  child : ListView.builder(
                   itemCount: model.articles.length,
                   itemBuilder: (context, index) {
                     final article = model.articles[index];
@@ -144,6 +152,7 @@ class _NewListViewState extends State<NewsListView>{
                       ),
                     );
                   },
+                )
                 );
               },
             ),
@@ -164,12 +173,13 @@ class _NewListViewState extends State<NewsListView>{
           icon: Icon(Icons.search)
         ),
         IconButton(
-          onPressed: (){},
+          onPressed: (){
+          },
           icon: Icon(Icons.brightness_6),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Image.asset("assets/splash/splash_icon.png"),
+          child: Image.asset("assets/splash/splash_icon.png",width: 40,height: 40,),
         )
       ];
     }
@@ -177,7 +187,7 @@ class _NewListViewState extends State<NewsListView>{
       return [
         Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Image.asset("assets/splash/splash_icon.png"),
+        child: Image.asset("assets/splash/splash_icon.png",width: 40,height: 40,),
       ),
     Container()
     ];

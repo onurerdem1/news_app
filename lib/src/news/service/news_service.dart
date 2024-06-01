@@ -13,7 +13,11 @@ class NewsService {
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
       Iterable list = result['articles'];
-      return list.map((article) => NewsArticle.fromJson(article)).toList();
+      List<NewsArticle> articles = list
+      .map((article) => NewsArticle.fromJson(article))
+      .where((article) => article.imageUrl.trim().isNotEmpty)
+      .toList();
+      return articles;
     } else {
       throw Exception('Failed to load top headlines');
     }

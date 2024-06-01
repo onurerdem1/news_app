@@ -13,11 +13,11 @@ class NewsArticle {
     return NewsArticle(
       author: json['author'] ?? 'Unknown',
       title: json['title'] ?? 'No Title',
-      description: json['description'] ?? 'No Description',
+      description: json['description'] ?? '',
       url: json['url'] ?? '',
       imageUrl: json['urlToImage'] ?? '',
       publishedAt: json['publishedAt'] ?? '',
-      content: json['content'] ?? 'No Content',
+      content: json['content'] ?? '',
     );
   }
 }

@@ -16,7 +16,7 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
     Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => NewsListView()),
+        MaterialPageRoute(builder: (context) => NewsListView(onToggleTheme: (){},)),
       );
     });
   }

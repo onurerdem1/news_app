@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../model/news_article.dart';
 import '../service/news_service.dart';
 
@@ -42,5 +40,8 @@ class NewsViewModel extends ChangeNotifier {
           .toList();
     }
     notifyListeners();
+  }
+  Future<void> refreshNews() async {
+    await fetchTopHeadlines(category: selectedCategory);
   }
 }

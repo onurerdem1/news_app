@@ -6,6 +6,8 @@ import '../view_model/news_view_model.dart';
 import 'news_detail_view.dart';
 
 class NewsListView extends StatefulWidget {
+  final VoidCallback onToggleTheme;
+  NewsListView({required this.onToggleTheme});
   @override
   _NewListViewState createState() => _NewListViewState();
 }
@@ -23,13 +25,17 @@ class _NewListViewState extends State<NewsListView>{
     Category(name: 'Technology', code: 'technology'),
   ];
 
-  Future<void> _refreshNews() async {
-    final selectedCategory = Provider.of<NewsViewModel>(context,listen: false).selectedCategory;
-    await Provider.of<NewsViewModel>(context,listen: false).fetchTopHeadlines(category: selectedCategory);
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Provider.of<NewsViewModel>(context,listen: false).fetchTopHeadlines();
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(75.0),
@@ -59,8 +65,8 @@ class _NewListViewState extends State<NewsListView>{
               prefixIcon: Icon(Icons.search),
           ),
         ),
-          actions: _buildAppBarActions(),
-        backgroundColor: Colors.grey[200],
+        actions: _buildAppBarActions(),
+        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
       ),
       body: Column(
@@ -100,7 +106,7 @@ class _NewListViewState extends State<NewsListView>{
                 }
 
                 return RefreshIndicator(
-                onRefresh: _refreshNews,
+                onRefresh: model.refreshNews,
                   child : ListView.builder(
                   itemCount: model.articles.length,
                   itemBuilder: (context, index) {
@@ -174,6 +180,7 @@ class _NewListViewState extends State<NewsListView>{
         ),
         IconButton(
           onPressed: (){
+            widget.onToggleTheme();
           },
           icon: Icon(Icons.brightness_6),
         ),

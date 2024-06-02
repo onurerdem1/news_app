@@ -1,16 +1,15 @@
-# news_app
+# News App
 
-A new Flutter project.
+A Flutter-based news application that fetches and displays the latest headlines. This app uses the NewsAPI to provide up-to-date news articles, with a focus on ensuring only relevant content is shown.
 
-## Getting Started
+Features
 
-This project is a starting point for a Flutter application.
+- Top Headlines: Displays the latest top headlines from various categories.
 
-A few resources to get you started if this is your first Flutter project:
+- Category Filtering: Users can filter news articles by categories such as Business, Sports, Technology, and more.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Detailed View: Tap on any headline to read the full article.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Content and Image Validation: Filters out articles with empty content or missing images to ensure a seamless user experience.
+
+- Responsive Design: Optimized for both Android and iOS devices.

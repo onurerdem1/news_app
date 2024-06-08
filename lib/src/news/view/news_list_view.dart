@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/core/image/image_constants.dart';
 import 'package:provider/provider.dart';
-
 import '../../category.dart';
 import '../view_model/news_view_model.dart';
 import 'news_detail_view.dart';
@@ -35,14 +35,123 @@ class _NewListViewState extends State<NewsListView>{
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(75.0),
-        child: AppBar(
+       appBar: appBAr(context),
+      body: Column(
+        children: [
+          buildCategories(context),
+          buildNews(context),
+        ],
+      ),
+    );
+  }
+
+  Widget buildNews(BuildContext context){
+    return Expanded(
+      child: Consumer<NewsViewModel>(
+        builder: (context, model, child) {
+          if (model.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return RefreshIndicator(
+              onRefresh: model.refreshNews,
+              child : ListView.builder(
+                itemCount: model.articles.length,
+                itemBuilder: (context, index) {
+                  final article = model.articles[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewsDetailView(article: article),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      margin: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          article.imageUrl.isNotEmpty
+                              ? Image.network(article.imageUrl, fit: BoxFit.cover)
+                              : Container(height: 50, color: Colors.grey,child: Center(child: Text("No Image"),),),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  article.title,
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8.0),
+                                Text(
+                                  article.description.isNotEmpty ? article.description : 'No Description',
+                                  style: TextStyle(fontSize: 14.0),
+                                ),
+                                SizedBox(height: 8.0),
+                                Text(
+                                  'Published at ${article.publishedAt}',
+                                  style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              )
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildCategories(BuildContext context){
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: categories.map((category) {
+          return GestureDetector(
+            onTap: () {
+              Provider.of<NewsViewModel>(context, listen: false)
+                  .fetchTopHeadlines(category: category.code);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin: EdgeInsets.symmetric(horizontal: 4.0),
+              decoration: BoxDecoration(
+                color: category.code == Provider.of<NewsViewModel>(context).selectedCategory
+                    ? Colors.blue
+                    : Colors.grey,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Text(
+                category.name,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  PreferredSize appBAr(BuildContext context){
+    final theme = Theme.of(context);
+    return PreferredSize(
+      preferredSize: Size.fromHeight(75.0),
+      child: AppBar(
         title: !_isSearching
-          ? Text("News App")
-        : TextField(
+            ? Text("News App")
+            : TextField(
           onChanged: (query){
             Provider.of<NewsViewModel>(context,listen: false).filterArticles(query);
           },
@@ -62,108 +171,11 @@ class _NewListViewState extends State<NewsListView>{
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
-              prefixIcon: Icon(Icons.search),
+            prefixIcon: Icon(Icons.search),
           ),
         ),
         actions: _buildAppBarActions(),
         backgroundColor: theme.appBarTheme.backgroundColor,
-      ),
-      ),
-      body: Column(
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: categories.map((category) {
-                return GestureDetector(
-                  onTap: () {
-                    Provider.of<NewsViewModel>(context, listen: false)
-                        .fetchTopHeadlines(category: category.code);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    margin: EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      color: category.code == Provider.of<NewsViewModel>(context).selectedCategory
-                          ? Colors.blue
-                          : Colors.grey,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Text(
-                      category.name,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          Expanded(
-            child: Consumer<NewsViewModel>(
-              builder: (context, model, child) {
-                if (model.isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                return RefreshIndicator(
-                onRefresh: model.refreshNews,
-                  child : ListView.builder(
-                  itemCount: model.articles.length,
-                  itemBuilder: (context, index) {
-                    final article = model.articles[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewsDetailView(article: article),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        margin: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            article.imageUrl.isNotEmpty
-                                ? Image.network(article.imageUrl, fit: BoxFit.cover)
-                                : Container(height: 50, color: Colors.grey,child: Center(child: Text("No Image"),),),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    article.title,
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text(
-                                    article.description.isNotEmpty ? article.description : 'No Description',
-                                    style: TextStyle(fontSize: 14.0),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text(
-                                    'Published at ${article.publishedAt}',
-                                    style: TextStyle(fontSize: 12.0, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -186,7 +198,7 @@ class _NewListViewState extends State<NewsListView>{
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Image.asset("assets/splash/splash_icon.png",width: 40,height: 40,),
+          child: Image.asset(ImageConstants.instance.splashIcon,width: 40,height: 40,),
         )
       ];
     }
@@ -194,7 +206,7 @@ class _NewListViewState extends State<NewsListView>{
       return [
         Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Image.asset("assets/splash/splash_icon.png",width: 40,height: 40,),
+        child: Image.asset(ImageConstants.instance.splashIcon,width: 40,height: 40,),
       ),
     Container()
     ];

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../model/news_article.dart';
 import '../service/news_service.dart';
 
-
 class NewsViewModel extends ChangeNotifier {
   List<NewsArticle> _articles = [];
   List<NewsArticle> _filteredArticles = [];
@@ -16,8 +15,6 @@ class NewsViewModel extends ChangeNotifier {
   Future<void> fetchTopHeadlines({String category = ''}) async {
     _isLoading = true;
     notifyListeners();
-
-
     // removed articles should not show up
     try {
       _articles = await NewsService().fetchTopHeadlines(category: category.isEmpty ? '' : category);

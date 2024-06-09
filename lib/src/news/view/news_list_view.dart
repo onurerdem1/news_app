@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/core/image/image_constants.dart';
+import 'package:news_app/src/news/model/news_article.dart';
 import 'package:provider/provider.dart';
 import '../../category.dart';
 import '../view_model/news_view_model.dart';
@@ -46,6 +47,48 @@ class _NewListViewState extends State<NewsListView>{
     );
   }
 
+  Widget buildArticleCard(BuildContext context,NewsArticle article){
+    return Card(
+      margin: EdgeInsets.all(10),
+      child: InkWell(
+        onTap: (){
+          navigatetoDetail(context, article);
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(article.imageUrl),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                article.title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                article.description ,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Published at : ${article.publishedAt}',
+                style: TextStyle(color: Colors.grey),
+              ),
+            )
+          ],
+        )
+      ),
+    );
+  }
+
   Widget buildNews(BuildContext context){
     return Expanded(
       child: Consumer<NewsViewModel>(
@@ -53,59 +96,16 @@ class _NewListViewState extends State<NewsListView>{
           if (model.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
-
+          if (model.articles.isEmpty){
+            return Center(child: Text("No Articles Available."),);
+          }
           return RefreshIndicator(
               onRefresh: model.refreshNews,
               child : ListView.builder(
                 itemCount: model.articles.length,
                 itemBuilder: (context, index) {
                   final article = model.articles[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewsDetailView(article: article),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      margin: EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          article.imageUrl.isNotEmpty
-                              ? Image.network(article.imageUrl, fit: BoxFit.cover)
-                              : Container(height: 50, color: Colors.grey,child: Center(child: Text("No Image"),),),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  article.title,
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  article.description.isNotEmpty ? article.description : 'No Description',
-                                  style: TextStyle(fontSize: 14.0),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  'Published at ${article.publishedAt}',
-                                  style: TextStyle(fontSize: 12.0, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return buildArticleCard(context, article);
                 },
               )
           );
@@ -211,6 +211,29 @@ class _NewListViewState extends State<NewsListView>{
     Container()
     ];
     }
+  }
+
+  void navigatetoDetail(BuildContext context,NewsArticle article){
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+          pageBuilder: (context,animation,secondaryAnimation)=> NewsDetailView(article: article),
+          transitionsBuilder: (context,animation,secondaryAnimation,child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween = Tween(begin: begin,end: end,).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+            );
+
+          }
+
+      )
+    );
   }
 
 

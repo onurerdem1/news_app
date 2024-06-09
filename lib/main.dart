@@ -1,9 +1,11 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:news_app/src/news/view/news_list_view.dart';
+import 'package:news_app/core/theme/light.dart';
 import 'package:news_app/src/news/view_model/news_view_model.dart';
+import 'package:news_app/src/splash/view/splash_view.dart';
 import 'package:news_app/src/theme_provider.dart';
 import 'package:provider/provider.dart';
+
+
 
 
 void main() {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider(lightTheme)),
         ChangeNotifierProvider(create: (_) => NewsViewModel()),
       ],
       child: Consumer<ThemeProvider>(
@@ -23,19 +25,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'News App',
             debugShowCheckedModeBanner: false,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: themeProvider.themeMode,
-            home: AnimatedSplashScreen(
-          splash: 'assets/splash/splash_icon.png',
-          nextScreen: NewsListView(onToggleTheme: (){
-            themeProvider.toggleTheme();
-            },
-          ),
-          splashTransition: SplashTransition.fadeTransition,
-          backgroundColor: Colors.white,
-          duration: 3000,
-          )
+            theme: themeProvider.themeData,
+            home: SplashView()
             );
         },
       ),

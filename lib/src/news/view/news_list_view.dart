@@ -36,8 +36,10 @@ class _NewListViewState extends State<NewsListView>{
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-       appBar: appBAr(context),
+       appBar: appBAr(context,theme.scaffoldBackgroundColor),
+      drawer: buildDrawer(context),
       body: Column(
         children: [
           buildCategories(context),
@@ -144,11 +146,64 @@ class _NewListViewState extends State<NewsListView>{
     );
   }
 
-  PreferredSize appBAr(BuildContext context){
+  Widget buildDrawer(BuildContext context) {
     final theme = Theme.of(context);
+    bool isDarkTheme = theme.brightness == Brightness.dark;
+    return Drawer(
+      child: Container(
+        color: theme.scaffoldBackgroundColor,
+        child: Column(
+        children: [
+          Container(
+            height: 120.0,
+            alignment: Alignment.center,
+            child: Text('Menu',style: TextStyle(fontSize: 24),),
+            ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              // Handle navigation to home
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.brightness_6),
+            title: Text("Switch Theme"),
+            trailing: Switch(
+              value: isDarkTheme,
+              onChanged: (value) {
+                widget.onToggleTheme();
+              },
+            ),
+          ),
+          Spacer(),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              // Handle navigation to settings
+            },
+          ),
+        ],
+      ),
+      ),
+    );
+  }
+
+  PreferredSize appBAr(BuildContext context,Color backgroundColor){
     return PreferredSize(
       preferredSize: Size.fromHeight(75.0),
       child: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+          onPressed: (){
+              Scaffold.of(context).openDrawer();
+          },
+        ),
+        ),
+        backgroundColor: backgroundColor,
         title: !_isSearching
             ? Text("News App")
             : TextField(
@@ -175,7 +230,6 @@ class _NewListViewState extends State<NewsListView>{
           ),
         ),
         actions: _buildAppBarActions(),
-        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
     );
   }
@@ -189,12 +243,6 @@ class _NewListViewState extends State<NewsListView>{
             });
           },
           icon: Icon(Icons.search)
-        ),
-        IconButton(
-          onPressed: (){
-            widget.onToggleTheme();
-          },
-          icon: Icon(Icons.brightness_6),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),

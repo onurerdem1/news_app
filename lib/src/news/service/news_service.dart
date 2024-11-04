@@ -14,15 +14,10 @@ class NewsService {
       if (response.statusCode == 200) {
         final result = json.decode(response.body);
         Iterable list = result['articles'];
-
-        // Resim URL'si 406 hatası döndüren haberleri filtreleme
         List<NewsArticle> articles = [];
         for (var article in list) {
           final newsArticle = NewsArticle.fromJson(article);
           final imageUrl = newsArticle.imageUrl;
-          
-
-          // Resim URL'si varsa ve istek başarılı oluyorsa ekleyin
           if (imageUrl != null && imageUrl.trim().isNotEmpty) {
             final imageResponse = await http.head(Uri.parse(imageUrl));
             if (imageResponse.statusCode != 406) {

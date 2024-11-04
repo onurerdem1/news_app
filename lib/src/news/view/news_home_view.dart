@@ -6,7 +6,7 @@ import 'package:news_app/core/colors/colors.dart';
 import 'package:news_app/core/image/image_constants.dart';
 import 'package:news_app/src/news/model/news_article.dart';
 import 'package:provider/provider.dart';
-import '../../category.dart';
+import '../../models/category.dart';
 import '../view_model/news_view_model.dart';
 import 'news_detail_view.dart';
 
@@ -18,7 +18,8 @@ class NewsListView extends StatefulWidget {
 }
 
 class _NewListViewState extends State<NewsListView> {
-  PageController pageController = PageController();
+  PageController pageController2 = PageController();
+  PageController pageController1 = PageController();
   bool _isSearching = false;
   TextEditingController searchcontroller = TextEditingController();
   final List<Category> categories = [
@@ -34,12 +35,16 @@ class _NewListViewState extends State<NewsListView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<NewsViewModel>(context, listen: false).fetchTopHeadlines(category: ' ');
+      Provider.of<NewsViewModel>(context, listen: false).fetchTopHeadlinesVertical(category: ' ');
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<NewsViewModel>(context, listen: false).fetchTopHeadlinesHorizontal(category: ' ');
     });
   }
 
   void dispose(){
-    pageController.dispose();
+    pageController1.dispose();
+    pageController2.dispose();
     dispose();
   }
 
@@ -62,6 +67,7 @@ class _NewListViewState extends State<NewsListView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: appBAr(context, theme.scaffoldBackgroundColor),
       drawer: buildDrawer(context),
@@ -86,7 +92,7 @@ class _NewListViewState extends State<NewsListView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(padding: EdgeInsets.only(left: 10),
-        child : Text("$text",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold,),),),
+        child : Text("$text",style: TextStyle(fontFamily:"Montserrat" ,fontSize: 22,fontWeight: FontWeight.bold,),),),
         Padding(padding: EdgeInsets.only(right: 20),
         child:Icon(Icons.menu))
       ],
@@ -106,7 +112,7 @@ class _NewListViewState extends State<NewsListView> {
         navigatetoDetail(context, article);
       },
       child: Padding(
-        padding: EdgeInsets.all(8), // Kart içindeki boşluk
+        padding: EdgeInsets.all(8), 
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -114,12 +120,12 @@ class _NewListViewState extends State<NewsListView> {
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 article.imageUrl,
-                width: 100, // Resmin genişliği
-                height: 100, // Resmin yüksekliği
+                width: 100, 
+                height: 100, 
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(width: 10), // Resim ile metin arasında boşluk
+            SizedBox(width: 10), 
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,14 +133,14 @@ class _NewListViewState extends State<NewsListView> {
                   Text(
                     article.title,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    maxLines: 2, // Başlık 2 satırdan fazla olamaz
-                    overflow: TextOverflow.ellipsis, // Taşarsa üç nokta göster
+                    maxLines: 2, 
+                    overflow: TextOverflow.ellipsis, 
                   ),
                   Padding(padding: EdgeInsets.only(left:170,top: 30),
                   child:Text(
                     timeAgo(article.publishedAt),
                   ))
-                  // Diğer içerikler burada eklenebilir
+                  
                 ],
               ),
             ),
@@ -168,7 +174,7 @@ class _NewListViewState extends State<NewsListView> {
                 child: Image.network(
                   article.imageUrl,
                   width: double.infinity,
-                  height: 150, // Resmin yüksekliği
+                  height: 150, 
                   fit: BoxFit.cover,
                 ),
               ),
@@ -178,8 +184,8 @@ class _NewListViewState extends State<NewsListView> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                   child: Text(
-                    timeAgo(article.publishedAt), // Zamanı buraya koyuyoruz
-                    style: TextStyle(color: theme.scaffoldBackgroundColor, fontSize: 13,fontWeight: FontWeight.bold),
+                    timeAgo(article.publishedAt), 
+                    style: TextStyle(color: Colors.white, fontSize: 13,fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -206,8 +212,8 @@ class _NewListViewState extends State<NewsListView> {
       height: 300,
       child: Consumer<NewsViewModel>(
         builder: (context, model, child) {
-          if (model.isLoading) {
-            return Center(child: CircularProgressIndicator());
+          if (model.isLoadingHorizontal) {
+            return Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
           }
           final DateTime now = DateTime.now();
           final List<NewsArticle> recentArticles = model.articles.where((article) {
@@ -219,9 +225,9 @@ class _NewListViewState extends State<NewsListView> {
 
           final List<NewsArticle> horizontalArticles = recentArticles.take(10).toList();
           return RefreshIndicator(
-              onRefresh: model.refreshNews,
+              onRefresh: model.refreshNewsHorizontal,
               child: PageView.builder(
-                controller: pageController,
+                controller: pageController1,
                 itemCount: horizontalArticles.length,
                 itemBuilder: (context, index) {
                   final article = horizontalArticles[index];
@@ -237,18 +243,20 @@ class _NewListViewState extends State<NewsListView> {
     return Expanded(
       child: Consumer<NewsViewModel>(
         builder: (context, model, child) {
-          if (model.isLoading) {
-            return Center(child: CircularProgressIndicator());
+          if (model.isLoadingVertical) {
+            return Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
           }
           if (model.articles.isEmpty) {
             return Center(
-              child: Text("No Articles Available."),
+              child: Text("No Articles Available.",style: TextStyle(fontFamily: "Montserrat",fontWeight: FontWeight.bold),),
             );
           }
           final List<NewsArticle> verticalArticles = model.articles.skip(10).toList();
           return RefreshIndicator(
-              onRefresh: model.refreshNews,
+            color: AppColors.primaryColor,
+              onRefresh: model.refreshNewsVertical,
               child: ListView.builder(
+                controller: pageController2,
                 itemCount: verticalArticles.length,
                 itemBuilder: (context, index) {
                   final article = verticalArticles[index];
@@ -264,41 +272,43 @@ class _NewListViewState extends State<NewsListView> {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Kategoriler arası eşit mesafe
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
       children: categories.map((category) {
         return GestureDetector(
           onTap: () {
             Provider.of<NewsViewModel>(context, listen: false)
-                .fetchTopHeadlines(category: category.code);
+                .fetchTopHeadlinesVertical(category: category.code);
+            Provider.of<NewsViewModel>(context, listen: false)
+                .fetchTopHeadlinesHorizontal(category: category.code);
           },
           child: Column(
             children: [
               Container(
-                width: 50, // Kare görünüm için genişlik ve yükseklik eşit
+                width: 50, 
                 height: 50,
                 padding: EdgeInsets.all(8.0),
-                margin: EdgeInsets.symmetric(horizontal: 8.0), // Kategoriler arasında eşit boşluk
+                margin: EdgeInsets.symmetric(horizontal: 8.0), 
                 decoration: BoxDecoration(
                   color: category.code ==
                           Provider.of<NewsViewModel>(context).selectedCategory
                       ? AppColors.primaryColor
                       : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(15.0), // Köşeleri yuvarla
+                  borderRadius: BorderRadius.circular(15.0), 
                 ),
                 child: Icon(
-                  category.icon, // Kategori ile ilgili ikon
+                  category.icon, 
                   color: category.code == 
                           Provider.of<NewsViewModel>(context).selectedCategory
                           ? Colors.white
                           : Colors.grey,
-                  size: 24, // İkon boyutu
+                  size: 24, 
                 ),
               ),
-              SizedBox(height: 4), // Container ve metin arasında boşluk
+              SizedBox(height: 4), 
               Text(
                 category.name,
-                style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
-                textAlign: TextAlign.center, // Metni ortala
+                style: TextStyle(fontSize: 11,fontWeight:FontWeight.bold,fontFamily:  "Montserrat"),
+                textAlign: TextAlign.center, 
               ),
             ],
           ),
@@ -331,7 +341,6 @@ class _NewListViewState extends State<NewsListView> {
               leading: Icon(Icons.home),
               title: Text('Home'),
               onTap: () {
-                // Handle navigation to home
                 Navigator.pop(context);
               },
             ),
@@ -350,7 +359,6 @@ class _NewListViewState extends State<NewsListView> {
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () {
-                // Handle navigation to settings
               },
             ),
           ],

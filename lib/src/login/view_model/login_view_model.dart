@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:news_app/src/login/view/login_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:news_app/src/news/view/news_home_view.dart';
 import 'package:news_app/src/theme_provider.dart';
 
-
-class SplashViewModel extends ChangeNotifier {
-  SplashViewModel() {
-    _init();
+class LoginViewModel extends ChangeNotifier{
+  LoginViewModel() {
+     _init();
   }
 
   Future<void> _init() async {
@@ -16,9 +14,9 @@ class SplashViewModel extends ChangeNotifier {
   void navigatetoHome(BuildContext context,ThemeProvider themeProvider){
     Navigator.pushReplacement(context,
         PageRouteBuilder(
-          pageBuilder: (context,animation,secondaryAnimation)=> LoginScreen(),
+          pageBuilder: (context,animation,secondaryAnimation)=> NewsListView(onToggleTheme: (){themeProvider.toggleTheme();}),
           transitionsBuilder: (context,animation,secondaryAnimation,child){
-            const begin = Offset(0.0, 1.0);
+            const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
             const curve = Curves.ease;
 

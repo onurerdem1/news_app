@@ -5,20 +5,20 @@ import '../service/news_service.dart';
 class NewsViewModel extends ChangeNotifier {
   List<NewsArticle> _articles = [];
   List<NewsArticle> _filteredArticles = [];
-  bool _isLoading = false;
-  String _selectedCategory = ' '; // Başlangıç olarak 'Top Headlines' kategorisi
+  bool _isLoadingVertical = false;
+  bool _isLoadingHorizontal = false;
+  String _selectedCategory = ' '; 
 
   List<NewsArticle> get articles => _filteredArticles;
-  bool get isLoading => _isLoading;
+  bool get isLoadingVertical => _isLoadingVertical;
+  bool get isLoadingHorizontal => _isLoadingHorizontal;
   String get selectedCategory => _selectedCategory;
 
-  Future<void> fetchTopHeadlines({required String category}) async {
-    _selectedCategory = category; // Seçilen kategoriyi güncelle
-    _isLoading = true; // Yükleniyor durumunu güncelle
-    notifyListeners(); // Ekranı güncelle
-
+  Future<void> fetchTopHeadlinesHorizontal({required String category}) async {
+    _selectedCategory = category; 
+    _isLoadingHorizontal=true;
+    notifyListeners(); 
     try {
-      // Servis çağrısını gerçekleştir ve "removed" başlığı olan makaleleri filtrele
       _articles = await NewsService().fetchTopHeadlines(category: category.trim());
       _filteredArticles = _articles
           .where((article) => !article.title.toLowerCase().contains('removed'))
@@ -26,8 +26,25 @@ class NewsViewModel extends ChangeNotifier {
     } catch (e) {
       print('Hata: $e');
     } finally {
-      _isLoading = false; // Yüklenme durumu bitti
-      notifyListeners(); // Durum değişikliğini bildir
+      _isLoadingHorizontal=false;
+      notifyListeners(); 
+    }
+  }
+
+  Future<void> fetchTopHeadlinesVertical({required String category}) async {
+    _selectedCategory = category; 
+    _isLoadingVertical=true;
+    notifyListeners(); 
+    try {
+      _articles = await NewsService().fetchTopHeadlines(category: category.trim());
+      _filteredArticles = _articles
+          .where((article) => !article.title.toLowerCase().contains('removed'))
+          .toList();
+    } catch (e) {
+      print('Hata: $e');
+    } finally {
+    _isLoadingVertical=false;
+      notifyListeners(); 
     }
   }
 
@@ -41,7 +58,18 @@ class NewsViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-  Future<void> refreshNews() async {
-    await fetchTopHeadlines(category: selectedCategory);
+  Future<void> refreshNewsVertical() async {
+    _isLoadingVertical=true;
+    notifyListeners();
+    await fetchTopHeadlinesVertical(category: selectedCategory);
+    _isLoadingVertical=false;
+    notifyListeners();
+  }
+  Future<void> refreshNewsHorizontal() async {
+    _isLoadingHorizontal=true;
+    notifyListeners();
+    await fetchTopHeadlinesHorizontal(category: selectedCategory);
+    _isLoadingHorizontal=false;
+    notifyListeners();
   }
 }

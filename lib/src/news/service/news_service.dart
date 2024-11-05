@@ -18,7 +18,7 @@ class NewsService {
         for (var article in list) {
           final newsArticle = NewsArticle.fromJson(article);
           final imageUrl = newsArticle.imageUrl;
-          if (imageUrl != null && imageUrl.trim().isNotEmpty) {
+          if (imageUrl.trim().isNotEmpty) {
             final imageResponse = await http.head(Uri.parse(imageUrl));
             if (imageResponse.statusCode != 406) {
               articles.add(newsArticle);

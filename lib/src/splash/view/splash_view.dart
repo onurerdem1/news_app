@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/theme_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../news/view/news_home_view.dart';
 import '../view_model/splash_view_model.dart';
 
 

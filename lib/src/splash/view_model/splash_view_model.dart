@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/login/view/login_view.dart';
-import 'package:news_app/src/news/view/news_home_view.dart';
 import 'package:news_app/src/theme_provider.dart';
 
 

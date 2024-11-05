@@ -32,6 +32,7 @@ class _NewListViewState extends State<NewsListView> {
     Category(name: 'Technology', code: 'technology',icon: FontAwesomeIcons.microchip),
   ];
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,6 +43,7 @@ class _NewListViewState extends State<NewsListView> {
     });
   }
 
+  @override
   void dispose(){
     pageController1.dispose();
     pageController2.dispose();
@@ -244,10 +246,10 @@ class _NewListViewState extends State<NewsListView> {
       child: Consumer<NewsViewModel>(
         builder: (context, model, child) {
           if (model.isLoadingVertical) {
-            return Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
+            return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
           }
           if (model.articles.isEmpty) {
-            return Center(
+            return const Center(
               child: Text("No Articles Available.",style: TextStyle(fontFamily: "Montserrat",fontWeight: FontWeight.bold),),
             );
           }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/theme/light.dart';
 import 'package:news_app/src/news/view_model/news_view_model.dart';
 import 'package:news_app/src/splash/view/splash_view.dart';
@@ -22,11 +23,14 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
-          return MaterialApp(
+          return ScreenUtilInit(
+            builder: (context,child) => MaterialApp(
             title: 'News App',
             debugShowCheckedModeBanner: false,
             theme: themeProvider.themeData,
             home: SplashView()
+            ),
+            designSize: Size(412, 915),
             );
         },
       ),

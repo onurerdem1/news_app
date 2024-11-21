@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:news_app/core/colors/colors.dart';
 import 'package:news_app/core/image/image_constants.dart';
 import 'package:news_app/src/login/view_model/login_view_model.dart';
@@ -21,130 +23,139 @@ class _LoginScreenState extends State<LoginScreen> {
     LoginViewModel loginViewModel = LoginViewModel();
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: theme.scaffoldBackgroundColor,
         body: Stack(children: [
+          Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Image.asset(
+            ImageConstants.instance.wavePng,
+            height: 300.h,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
+        ),
           Column(
             children: [
+              SizedBox(height: 175.h,),
               buildIcon(),
+              SizedBox(height: 100.h,),
               emailTextField(),
+              SizedBox(height: 10.h,),
               passwordTextField(),
+              SizedBox(height: 20.h,),
               loginButton(loginViewModel,themeProvider),
+              SizedBox(height: 10.h,),
               forgotPassword(),
-              const Spacer(),
+              SizedBox(height: screenHeight*0.08.h,),
+              dontHaveAccount(loginViewModel, themeProvider)
             ],
           ),
-          Positioned(left: 0, bottom: 10, right: 0, child: dontHaveAccount(loginViewModel,themeProvider))
         ]));
   }
 
   Widget buildIcon() {
-    return Padding(
-        padding: const EdgeInsets.only(top: 150),
-        child: Row(
+    return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(ImageConstants.instance.splashIcon),
-           const SizedBox(
-              width: 20,
+            SizedBox(
+              width: 20.w,
             ),
-           const Text(
+            Text(
               "News App",
               style: TextStyle(
                   fontFamily: "Montserrat",
                   fontWeight: FontWeight.bold,
                   color: AppColors.primaryColor,
-                  fontSize: 30),
+                  fontSize: 30.sp),
             )
           ],
-        ));
+        );
   }
 
   Widget emailTextField() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-            padding: EdgeInsets.only(right: 300, top: 100),
-            child: Text(
+         Text(
               "Email",
               style: TextStyle(
                   fontFamily: "Montserrat",
                   fontWeight: FontWeight.bold,
-                  fontSize: 13),
-            )),
-        Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-                height: 50,
-                width: 350,
+                  fontSize: 13.sp),
+            ),
+            SizedBox(height: 5.h),
+            SizedBox(
+                height: 50.h,
+                width: 350.w,
                 child: TextField(
                   cursorColor: AppColors.primaryColor,
                   controller: emailController,
                   decoration: InputDecoration(
                       hintText: "example@example.com",
-                      contentPadding: const EdgeInsets.only(left: 30),
+                      contentPadding:  EdgeInsets.symmetric(horizontal: 25.w),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
-                        30.0,
+                        30.0.r,
                       )),
                       focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              color: AppColors.primaryColor, width: 2))),
-                )))
+                          borderRadius: BorderRadius.circular(30.0.r),
+                          borderSide:  BorderSide(
+                              color: AppColors.primaryColor, width: 2.w))),
+                ))
       ],
     );
   }
 
   Widget passwordTextField() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-            padding: EdgeInsets.only(right: 275, top: 10),
-            child: Text(
+         Text(
               "Password",
               style: TextStyle(
                   fontFamily: "Montserrat",
                   fontWeight: FontWeight.bold,
-                  fontSize: 13),
-            )),
-        Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-              height: 50,
-              width: 350,
+                  fontSize: 13.sp),
+            ),
+         SizedBox(
+              height: 50.h,
+              width: 350.w,
               child: TextField(
                 cursorColor: AppColors.primaryColor,
                 controller: passwordController,
                 decoration: InputDecoration(
                     hintText: "Password",
-                    contentPadding: const EdgeInsets.only(left: 30),
+                    contentPadding:  EdgeInsets.symmetric(horizontal: 24.w),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
+                        borderRadius: BorderRadius.circular(30.0.r)),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(
-                            color: AppColors.primaryColor, width: 2))),
-              ),
+                        borderRadius: BorderRadius.circular(30.0.r),
+                        borderSide:  BorderSide(
+                            color: AppColors.primaryColor, width: 2.w))),
+              
             ))
       ],
     );
   }
 
   Widget loginButton(LoginViewModel viewModel,ThemeProvider themeProvider) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 25),
-        child: SizedBox(
-          width: 350,
-          height: 50,
+    return SizedBox(
+          width: 350.w,
+          height: 50.h,
           child: FloatingActionButton(
             onPressed: () {
               viewModel.navigatetoHome(context, themeProvider);
             },
             backgroundColor: AppColors.primaryColor,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
                 child: const Text(
               "Login",
               style: TextStyle(
@@ -153,43 +164,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-        ));
+        );
   }
 
   Widget forgotPassword() {
-    return Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: GestureDetector(
-          child: const Text(
+    return GestureDetector(
+          child:  Text(
             "Forgot Password?",
             style: TextStyle(
                 fontFamily: "Montserrat",
                 color: AppColors.primaryColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 13),
+                fontSize: 13.sp),
           ),
-        ));
+        );
   }
 
   Widget dontHaveAccount(LoginViewModel viewModel,ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-       const Text(
+        Text(
           "Don't Have Account?  ",
-          style: TextStyle(fontFamily: "Montserrat", fontSize: 13),
+          style: TextStyle(fontFamily: "Montserrat", fontSize: 13.sp),
         ),
         GestureDetector(
           onTap: (){
             viewModel.navigateToRegister(context, themeProvider);
           },
-          child: const Text(
+          child:  Text(
             "Sign Up",
             style: TextStyle(
                 fontFamily: "Montserrat",
                 color: AppColors.primaryColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 13),
+                fontSize: 13.sp),
           ),
         )
       ],

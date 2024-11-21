@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:news_app/core/colors/colors.dart';
 import 'package:news_app/core/image/image_constants.dart';
@@ -76,13 +77,13 @@ class _NewListViewState extends State<NewsListView> {
       body: Column(
         children: [
           buildCategories(context),
-          SizedBox(height: 30,),
+          SizedBox(height: 30.h,),
           textLine(context,"News Today"),
-          SizedBox(height: 15,),
+          SizedBox(height: 15.h,),
           buildNewsHorizontal(context),
-          SizedBox(height: 15,),
+          SizedBox(height: 15.h,),
           textLine(context, "Latest News"),
-          SizedBox(height: 15,),
+          SizedBox(height: 15.h,),
           buildNewsVertical(context)
         ],
       ),
@@ -91,12 +92,11 @@ class _NewListViewState extends State<NewsListView> {
 
   Widget textLine(BuildContext context,String text){
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(padding: EdgeInsets.only(left: 10),
-        child : Text("$text",style: TextStyle(fontFamily:"Montserrat" ,fontSize: 22,fontWeight: FontWeight.bold,),),),
-        Padding(padding: EdgeInsets.only(right: 20),
-        child:Icon(Icons.menu))
+        SizedBox(width: 15.w,),
+         Text(text,style: TextStyle(fontFamily:"Montserrat" ,fontSize: 22.sp,fontWeight: FontWeight.bold,),),
+         SizedBox(width: 200.w,),
+        Icon(Icons.menu,size: 25.sp,)
       ],
     );
   }
@@ -108,13 +108,13 @@ class _NewListViewState extends State<NewsListView> {
     shadowColor: Colors.black,
     elevation: 4,
     color: theme.scaffoldBackgroundColor,
-    margin: EdgeInsets.all(10),
+    margin: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
     child: InkWell(
       onTap: () {
         navigatetoDetail(context, article);
       },
       child: Padding(
-        padding: EdgeInsets.all(8), 
+        padding: EdgeInsets.all(5.w), 
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -122,46 +122,44 @@ class _NewListViewState extends State<NewsListView> {
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 article.imageUrl,
-                width: 100, 
-                height: 100, 
+                width: 100.w, 
+                height: 100.h, 
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(width: 10), 
+            SizedBox(width: 15.w), 
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     article.title,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                     maxLines: 2, 
                     overflow: TextOverflow.ellipsis, 
                   ),
-                  Padding(padding: EdgeInsets.only(left:170,top: 30),
-                  child:Text(
+                  SizedBox(height: 20.h,),
+                  Text(
                     timeAgo(article.publishedAt),
-                  ))
-                  
+                  )
                 ],
               ),
             ),
           ],
         ),
       ),
-    ),
-  );
+  ));
 }
 
 
   Widget buildArticleCard(BuildContext context, NewsArticle article) {
   final theme = Theme.of(context);
   return Card(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
     shadowColor: Colors.black,
     elevation: 4,
     color: theme.scaffoldBackgroundColor,
-    margin: EdgeInsets.all(10),
+    margin: EdgeInsets.all(10.w),
     child: InkWell(
       onTap: () {
         navigatetoDetail(context, article);
@@ -172,32 +170,32 @@ class _NewListViewState extends State<NewsListView> {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15.r)),
                 child: Image.network(
                   article.imageUrl,
                   width: double.infinity,
-                  height: 150, 
+                  height: 170.h, 
                   fit: BoxFit.cover,
                 ),
               ),
               Positioned(
-                right: 8,
-                bottom: 8,
+                right: 8.w,
+                bottom: 8.h,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                   child: Text(
                     timeAgo(article.publishedAt), 
-                    style: TextStyle(color: Colors.white, fontSize: 13,fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontSize: 13.sp,fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
             ],
           ),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(8.w),
             child: Text(
               article.title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -211,7 +209,7 @@ class _NewListViewState extends State<NewsListView> {
 
   Widget buildNewsHorizontal(BuildContext context) {
     return SizedBox(
-      height: 300,
+      height: 300.h,
       child: Consumer<NewsViewModel>(
         builder: (context, model, child) {
           if (model.isLoadingHorizontal) {
@@ -286,16 +284,16 @@ class _NewListViewState extends State<NewsListView> {
           child: Column(
             children: [
               Container(
-                width: 50, 
-                height: 50,
-                padding: EdgeInsets.all(8.0),
-                margin: EdgeInsets.symmetric(horizontal: 8.0), 
+                width: 50.w, 
+                height: 50.h,
+                padding: EdgeInsets.all(8.0.w),
+                margin: EdgeInsets.symmetric(horizontal: 8.0.w), 
                 decoration: BoxDecoration(
                   color: category.code ==
                           Provider.of<NewsViewModel>(context).selectedCategory
                       ? AppColors.primaryColor
                       : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(15.0), 
+                  borderRadius: BorderRadius.circular(15.0.r), 
                 ),
                 child: Icon(
                   category.icon, 
@@ -303,13 +301,13 @@ class _NewListViewState extends State<NewsListView> {
                           Provider.of<NewsViewModel>(context).selectedCategory
                           ? Colors.white
                           : Colors.grey,
-                  size: 24, 
+                  size: 24.sp, 
                 ),
               ),
-              SizedBox(height: 4), 
+              SizedBox(height: 4.h), 
               Text(
                 category.name,
-                style: TextStyle(fontSize: 11,fontWeight:FontWeight.bold,fontFamily:  "Montserrat"),
+                style: TextStyle(fontSize: 11.sp,fontWeight:FontWeight.bold,fontFamily:  "Montserrat"),
                 textAlign: TextAlign.center, 
               ),
             ],
@@ -332,11 +330,11 @@ class _NewListViewState extends State<NewsListView> {
         child: Column(
           children: [
             Container(
-              height: 120.0,
+              height: 120.0.h,
               alignment: Alignment.center,
               child: Text(
                 'Menu',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24.sp),
               ),
             ),
             ListTile(
@@ -371,7 +369,7 @@ class _NewListViewState extends State<NewsListView> {
 
   PreferredSize appBAr(BuildContext context, Color backgroundColor) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(75.0),
+      preferredSize: Size.fromHeight(75.0.h),
       child: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
@@ -403,7 +401,7 @@ class _NewListViewState extends State<NewsListView> {
                 },
                 controller: searchcontroller,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 10),
+                  contentPadding: EdgeInsets.symmetric(vertical: 10.h),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.close),
                     onPressed: () {
@@ -415,7 +413,7 @@ class _NewListViewState extends State<NewsListView> {
                   ),
                   hintText: "Search...",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(30.0.r),
                   ),
                   prefixIcon: Icon(FontAwesomeIcons.searchengin),
                 ),
@@ -437,22 +435,22 @@ class _NewListViewState extends State<NewsListView> {
             },
             icon: Icon(FontAwesomeIcons.magnifyingGlass,color: AppColors.primaryColor,)),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Image.asset(
             ImageConstants.instance.splashIcon,
-            width: 40,
-            height: 40,
+            width: 40.w,
+            height: 40.h,
           ),
         )
       ];
     } else {
       return [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Image.asset(
             ImageConstants.instance.splashIcon,
-            width: 40,
-            height: 40,
+            width: 40.w,
+            height: 40.h,
           ),
         ),
         Container()
